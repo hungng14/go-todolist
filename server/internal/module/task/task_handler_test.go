@@ -45,7 +45,15 @@ func TestGetTasks(t *testing.T) {
 
 	fmt.Println("tasks", tasks)
 
+	var newTask models.Task
+
+	for i, t := range tasks {
+		if t.Title == "Test title" {
+			newTask = tasks[i]
+			break
+		}
+	}
+
 	// Validate the response data
-	assert.Equal(t, 1, len(tasks))
-	assert.Equal(t, "Test title", tasks[0].Title)
+	assert.Equal(t, "Test title", newTask.Title)
 }

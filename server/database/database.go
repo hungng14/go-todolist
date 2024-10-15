@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 
 	"todolist/config"
 	"todolist/internal/models"
@@ -20,22 +19,31 @@ type DbInstance struct {
 var DB DbInstance
 
 func InitDB() {
-	host := config.Config("DB_HOST")
-	p := config.Config("DB_PORT")
-	username := config.Config("DB_USER")
-	password := config.Config("DB_PASSWORD")
-	name := config.Config("DB_NAME")
+	// host := config.Config("DB_HOST")
+	// p := config.Config("DB_PORT")
+	// username := config.Config("DB_USER")
+	// password := config.Config("DB_PASSWORD")
+	// name := config.Config("DB_NAME")
 
-	port, err := strconv.ParseUint(p, 10, 32)
-	if err != nil {
-		fmt.Println("Error parsing port string to number")
+	// port, err := strconv.ParseUint(p, 10, 32)
+	// if err != nil {
+	// 	fmt.Println("Error parsing port string to number")
+	// }
+
+	// dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable", host, username, password, name, port)
+
+	var dsn string
+	if config.GO_ENV == "test" {
+		dsn = config.DB_DSN_TESTING
+	} else {
+		dsn = config.DB_DSN
 	}
 
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable", host, username, password, name, port)
+	fmt.Println("dsn", dsn)
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatal("Failed to connect to database", err)
+		log.Fatal("Failed to connect to database: ", err)
 		os.Exit(2)
 	}
 
